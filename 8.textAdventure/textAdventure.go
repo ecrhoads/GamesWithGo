@@ -1,12 +1,5 @@
 package main
 
-// HOMEWORK
-// NPC - talk to them, fight
-// NPC - move around graph
-// items picked up or placed down
-// accept natural language as input
-// build your own game -- see what you can accomplish just with this system
-
 import (
 	"bufio"
 	"fmt"
