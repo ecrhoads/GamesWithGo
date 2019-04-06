@@ -38,13 +38,18 @@ func (page *storyPage) addToEnd(text string) {
 	page.nextPage = &storyPage{text, nil}
 }
 
+func (page *storyPage) addAfter(text string) {
+	newPage := &storyPage{text, page.nextPage}
+	page.nextPage = newPage
+}
+
 func main() {
 	//scanner := bufio.NewScanner(os.Stdin)
 
 	page1 := storyPage{"It was a dark and stormy night.", nil}
 	page1.addToEnd("You are alone, and you need to find the sacred helmet before the bad guys do.")
 	page1.addToEnd("You see a troll ahead.")
-
+	page1.addAfter("Testing addAfter function.")
 	page1.playStory()
 
 	//Functions - has return value - may also execute commands
