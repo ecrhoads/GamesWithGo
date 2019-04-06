@@ -29,6 +29,7 @@ func setPixel(x, y int, c color, pixels []byte) {
 
 func main() {
 
+	//create window: position x, position y, width, height... UNDEFINED creates a default position
 	window, err := sdl.CreateWindow("Testing SDL2", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		800, 600, sdl.WINDOW_SHOWN)
 	if err != nil {
