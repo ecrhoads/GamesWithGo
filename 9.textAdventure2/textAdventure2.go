@@ -13,12 +13,6 @@ import (
 	"strings"
 )
 
-type npc struct {
-	name        string
-	description string
-	health      int
-}
-
 type choice struct {
 	cmd         string
 	description string
@@ -28,7 +22,6 @@ type choice struct {
 type storyNode struct {
 	text    string
 	choices []*choice
-	npc     []*npc
 }
 
 func (node *storyNode) addChoice(cmd string, description string, nextNode *storyNode) {
@@ -36,19 +29,9 @@ func (node *storyNode) addChoice(cmd string, description string, nextNode *story
 	node.choices = append(node.choices, choice)
 }
 
-func (node *storyNode) addNPC(name string, description string, health int) {
-	character := &npc{name, description, health}
-	node.npc = append(node.npc, character)
-}
-
 func (node *storyNode) render() {
 	fmt.Println(node.text)
-	if node.npc != nil {
-		for _, character := range node.npc {
-			fmt.Println("\n You are engaged with a character.")
-			fmt.Println(" Name: ", character.name, "\n", "Description: ", character.description, "\n", "Health: ", character.health)
-		}
-	}
+
 	if node.choices != nil {
 		for _, choice := range node.choices {
 			fmt.Println()
@@ -85,10 +68,6 @@ func printArray(a []string) {
 
 func main() {
 
-	abc := []string{"a", "b", "c"}
-	abc = append(abc, "d")
-	printArray(abc)
-
 	scanner = bufio.NewScanner(os.Stdin)
 
 	start := storyNode{text: `
@@ -98,13 +77,14 @@ func main() {
 	flat and well traveled`}
 
 	darkRoom := storyNode{text: "\n It is pitch black. You cannot see a thing."}
-	darkRoomLit := storyNode{text: "\n The dark passage is now lit by your lantern."}
-	grue := storyNode{text: "\n While stumbling around in the darkness, you are eaten by The Grue."}
+	darkRoomLit := storyNode{text: "\n The dark passage is now lit by your lantern. A Troll stands in the way."}
+	grue := storyNode{text: "\n While stumbling around in the darkness, you are eaten by a Grue."}
 	trap := storyNode{text: "\n You head down the well traveled path when suddenly a trap door opens and you fall into a pit."}
 	treasure := storyNode{text: "\n You arrive at a small chamber, filled with treasure!"}
-	death := storyNode{text: "\n The Grue kills you."}
-	fight := storyNode{text: "\n You wound The Grue with your trusty sword. He lunges toward you, snarling."}
-	champion := storyNode{text: "\n You slay The Grue."}
+	game := storyNode{text: "The troll evades your attack. He rumbles toward you and raises his spiked club."}
+	death := storyNode{text: "The troll swings his club down on you and crushes you like a bug."}
+	victory := storyNode{text: "You slay the troll."}
+	lastRoom := storyNode{text: "The passage way has two paths. One has a terrible odor. The other appears to have been well traveled."}
 
 	start.addChoice("N", "Go North", &darkRoom)
 	start.addChoice("S", "Go South", &darkRoom)
@@ -113,17 +93,19 @@ func main() {
 	darkRoom.addChoice("S", "Try to go back south", &grue)
 	darkRoom.addChoice("O", "Turn on lantern", &darkRoomLit)
 
-	darkRoomLit.addNPC("The Grue", "A ferocious creature who feasts on human flesh.", 200)
-	darkRoomLit.addChoice("A", "Attack", &fight)
+	darkRoomLit.addChoice("A", "Attack", &game)
 	darkRoomLit.addChoice("R", "Run Away", &start)
 
-	fight.addNPC("The Grue", "A ferocious creature who feasts on human flesh.", 100)
-	fight.addChoice("R", "Run away", &death)
-	fight.addChoice("D", "Dodge the attack", &death)
-	fight.addChoice("A", "Attack again", &champion)
+	game.addChoice("A", "Attack again", &victory)
+	game.addChoice("B", "Try to block", &death)
 
-	champion.addChoice("N", "Continue heading North", &treasure)
-	champion.addChoice("S", "Turn back South", &start)
+	victory.addChoice("N", "Continue North", &lastRoom)
+	victory.addChoice("S", "Turn back South", &start)
+
+	lastRoom.addChoice("L", "Turn left down the path with the terrible odor.", &treasure)
+	lastRoom.addChoice("R", "Turn right down the well traveled path.", &trap)
+	lastRoom.addChoice("S", "Turn back South", &start)
+
 	start.play()
 
 	fmt.Println()

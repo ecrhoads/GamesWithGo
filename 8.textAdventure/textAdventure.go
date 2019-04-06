@@ -78,6 +78,7 @@ func main() {
 	grue := storyNode{text: "While stumbling around in the darkness, you are eaten by a grue."}
 	trap := storyNode{text: "You head down the well traveled path when suddenly a trap door opens and you fall into a pit."}
 	treasure := storyNode{text: "You arrive at a small chamber, filled with treasure!"}
+	troll := npc{"Cave Troll", "A hulking blue-skinned beast with a spiked club and a taste for human flesh.", 200}
 
 	start.addChoice("N", "Go North", &darkRoom)
 	start.addChoice("S", "Go South", &darkRoom)
